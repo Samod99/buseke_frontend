@@ -4,6 +4,8 @@ import UserInfo from "./UserInfo";
 import ChangePwd from "./ChangePwd";
 import CreateUser from "./CreateUser";
 import UserList from "./UserList";
+import CreateRoute from "./CreateRoute";
+import RouteList from "./RouteList";
 const Account = () => {
   const [activeTab, setActiveTab] = useState("User Info");
 
@@ -31,15 +33,34 @@ const Account = () => {
         return <div className="p-6 bg-[#F6F6F6] rounded-lg shadow-md">
           <UserList />
         </div>;
+      case "Create Route":
+        return <div className="p-6 bg-[#F6F6F6] rounded-lg shadow-md">
+          <CreateRoute />
+        </div>;
+      case "Route List":
+        return <div className="p-6 bg-[#F6F6F6] rounded-lg shadow-md">
+          <RouteList />
+        </div>;
       case "Logout":
         return <div className="p-6 bg-[#F6F6F6] rounded-lg shadow-md">
-          <button className="px-8 py-2 text-sm bg-[#2b241a] text-white rounded-md">
+          <button className="px-8 py-2 text-sm bg-[#2b241a] text-white rounded-md" onClick={handleLogout}>
               Logout
             </button>
         </div>;
       default:
         return null;
     }
+  };
+
+  const handleLogout = () => {
+    // Clear token from localStorage
+    localStorage.removeItem("token");
+
+    // Optional: Provide feedback to the user
+    alert("You have been logged out successfully.");
+
+    // Redirect to login page
+    window.location.href = "/login"; // Or use navigate if using react-router
   };
 
   return (
@@ -56,7 +77,7 @@ const Account = () => {
           <div className="p-4">
             <h3 className="text-lg font-semibold mb-4">Account</h3>
             <nav className="space-y-4">
-              {["User Info", "Favourites", "Change Password", "Create User", "User List", "Logout"].map(
+              {["User Info", "Favourites", "Change Password", "Create User", "User List", "Create Route", "Route List", "Logout"].map(
                 (tab) => (
                   <button
                     key={tab}
