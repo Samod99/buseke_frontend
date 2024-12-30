@@ -32,7 +32,7 @@ const RouteList = () => {
       ).toString();
 
       const response = await axios.get(
-        `http://localhost:5000/api/routes${queryParams ? `?${queryParams}` : ''}`
+        `https://busekeapi.onrender.com/api/routes${queryParams ? `?${queryParams}` : ''}`
       );
       setRoutes(response.data);
       setLoading(false);
@@ -76,7 +76,7 @@ const RouteList = () => {
         stops: editFormData.stops.split(",").map(stop => stop.trim())
       };
       const response = await axios.put(
-        `http://localhost:5000/api/routes/${editingRoute._id}`,
+        `https://busekeapi.onrender.com/api/routes/${editingRoute._id}`,
         updateData,
         {
           headers: { Authorization: `Bearer ${token}` }
@@ -117,7 +117,7 @@ const RouteList = () => {
       const confirmDelete = window.confirm("Are you sure you want to delete this route?");
       if (!confirmDelete) return;
 
-      await axios.delete(`http://localhost:5000/api/routes/${routeId}`,
+      await axios.delete(`https://busekeapi.onrender.com/api/routes/${routeId}`,
         {
           headers: { Authorization: `Bearer ${token}` }
         });

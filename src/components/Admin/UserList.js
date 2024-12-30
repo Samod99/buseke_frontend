@@ -30,7 +30,7 @@ const UserList = () => {
       ).toString();
 
       const response = await axios.get(
-        `http://localhost:5000/api/users${queryParams ? `?${queryParams}` : ''}`,
+        `https://busekeapi.onrender.com/api/users${queryParams ? `?${queryParams}` : ''}`,
         {
           headers: { Authorization: `Bearer ${token}` }
         }
@@ -72,7 +72,7 @@ const UserList = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/users/${editingUser._id}`,
+        `https://busekeapi.onrender.com/api/users/${editingUser._id}`,
         editFormData,
         {
           headers: { Authorization: `Bearer ${token}` }
@@ -111,7 +111,7 @@ const UserList = () => {
       const confirmDelete = window.confirm("Are you sure you want to delete this user?");
       if (!confirmDelete) return;
 
-      await axios.delete(`http://localhost:5000/api/users/${userId}`, {
+      await axios.delete(`https://busekeapi.onrender.com/api/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(users.filter((user) => user._id !== userId));

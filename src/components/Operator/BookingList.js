@@ -35,7 +35,7 @@ const BookingList = () => {
       ).toString();
 
       const response = await axios.get(
-        `http://localhost:5000/api/bookings${queryParams ? `?${queryParams}` : ''}`, {
+        `https://busekeapi.onrender.com/api/bookings${queryParams ? `?${queryParams}` : ''}`, {
             headers: { Authorization: `Bearer ${token}` },
         }
       );
@@ -83,7 +83,7 @@ const BookingList = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/bookings/${editingBooking._id}`,
+        `https://busekeapi.onrender.com/api/bookings/${editingBooking._id}`,
         editFormData, {
             headers: { Authorization: `Bearer ${token}` },
         }
@@ -131,7 +131,7 @@ const BookingList = () => {
       const confirmDelete = window.confirm("Are you sure you want to delete this booking?");
       if (!confirmDelete) return;
 
-      await axios.delete(`http://localhost:5000/api/bookings/${bookingId}`, {
+      await axios.delete(`https://busekeapi.onrender.com/api/bookings/${bookingId}`, {
         headers: { Authorization: `Bearer ${token}` },
     });
       setBookings(bookings.filter((booking) => booking._id !== bookingId));

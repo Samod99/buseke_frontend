@@ -24,7 +24,7 @@ const CreateBus = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:5000/api/buses", formData, {
+            const response = await axios.post("https://busekeapi.onrender.com/api/buses", formData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             toast.success("Bus created successfully!");

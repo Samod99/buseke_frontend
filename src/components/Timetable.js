@@ -23,7 +23,8 @@ const Timetable = () => {
     const fetchTimetables = async () => {
         setLoading(true);
         try {
-            const response = await axios.get("http://localhost:5000/api/timetables");
+            //const response = await axios.get("http://localhost:5000/api/timetables");
+            const response = await axios.get("https://busekeapi.onrender.com/api/timetables");
             setTimetables(response.data);
         } catch (error) {
             toast.error("Failed to fetch timetables");
