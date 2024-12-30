@@ -23,7 +23,7 @@ function App() {
       <Route path="/Email-verify" element={<EmailVerify />} />
       <Route path="/Reset-password" element={<ResetPassword />} />
       <Route path="/admin/account" element={<Account />} />
-      <Route path="/operartor/account" element={<Profile />} />
+      <Route path="/operator/account" element={<Profile />} />
       <Route path="/timetable" element={<Timetable />} />
       <Route path="/reservation" element={<Reservation />} />
 
