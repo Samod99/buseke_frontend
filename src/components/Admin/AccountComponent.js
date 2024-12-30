@@ -6,6 +6,8 @@ import CreateUser from "./CreateUser";
 import UserList from "./UserList";
 import CreateRoute from "./CreateRoute";
 import RouteList from "./RouteList";
+import CreateTimetable from "./CreateTimetable";
+import TimetableList from "./TimetableList";
 const Account = () => {
   const [activeTab, setActiveTab] = useState("User Info");
 
@@ -41,6 +43,14 @@ const Account = () => {
         return <div className="p-6 bg-[#F6F6F6] rounded-lg shadow-md">
           <RouteList />
         </div>;
+      case "Create Timetable":
+        return <div className="p-6 bg-[#F6F6F6] rounded-lg shadow-md">
+          <CreateTimetable />
+        </div>;
+      case "Timetable List":
+        return <div className="p-6 bg-[#F6F6F6] rounded-lg shadow-md">
+          <TimetableList />
+        </div>;
       case "Logout":
         return <div className="p-6 bg-[#F6F6F6] rounded-lg shadow-md">
           <button className="px-8 py-2 text-sm bg-[#2b241a] text-white rounded-md" onClick={handleLogout}>
@@ -75,7 +85,7 @@ const Account = () => {
           <div className="p-4">
             <h3 className="text-lg font-semibold mb-4">Account</h3>
             <nav className="space-y-4">
-              {["User Info", "Favourites", "Change Password", "Create User", "User List", "Create Route", "Route List", "Logout"].map(
+              {["User Info", "Favourites", "Change Password", "Create User", "User List", "Create Route", "Route List", "Create Timetable", "Timetable List", "Logout"].map(
                 (tab) => (
                   <button
                     key={tab}

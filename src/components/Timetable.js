@@ -1,124 +1,135 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-Modal.setAppElement("#root"); // Ensure accessibility
+Modal.setAppElement("#root");
 
-const BusSchedule = () => {
-    const [selectedBus, setSelectedBus] = useState(null);
+const Timetable = () => {
+    const [timetables, setTimetables] = useState([]);
+    const [selectedTimetable, setSelectedTimetable] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    const busData = [
-        {
-            id: 1,
-            busNumber: "B101",
-            route: "Downtown - Central Park",
-            time: "08:30 AM",
-            duration: "1h 15m",
-        },
-        {
-            id: 2,
-            busNumber: "B202",
-            route: "Central Park - Uptown",
-            time: "10:00 AM",
-            duration: "45m",
-        },
-        {
-            id: 3,
-            busNumber: "B303",
-            route: "Uptown - Suburbs",
-            time: "12:15 PM",
-            duration: "1h",
-        },
-    ];
+    const token = localStorage.getItem("token");
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-    const openModal = (bus) => {
-        setSelectedBus(bus);
+    useEffect(() => {
+        fetchTimetables();
+    }, []);
+
+    const fetchTimetables = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get("http://localhost:5000/api/timetables");
+            setTimetables(response.data);
+            console.log("response is ",response.data);
+        } catch (error) {
+            toast.error("Failed to fetch timetables");
+        }
+        setLoading(false);
+    };
+
+    const openModal = (timetable) => {
+        setSelectedTimetable(timetable);
     };
 
     const closeModal = () => {
-        setSelectedBus(null);
+        setSelectedTimetable(null);
     };
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                Loading...
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto px-4 py-6">
-            <h1 className="text-3xl font-bold text-center mb-6">Bus Schedule</h1>
+            <h1 className="text-3xl font-bold text-center mb-6">Timetables</h1>
 
-            <div className="hidden md:block">
-                {/* Table for larger screens */}
-                <table className="w-full table-auto border-collapse border border-gray-300">
-                    <thead className="bg-gray-200">
-                        <tr>
-                            <th className="border border-gray-300 px-4 py-2">Bus Number</th>
-                            <th className="border border-gray-300 px-4 py-2">Route</th>
-                            <th className="border border-gray-300 px-4 py-2">Departure Time</th>
-                            <th className="border border-gray-300 px-4 py-2">Duration</th>
-                            <th className="border border-gray-300 px-4 py-2">Details</th>
+            <table className="w-full table-auto border-collapse border border-gray-300">
+                <thead className="bg-gray-200">
+                    <tr>
+                        <th className="border border-gray-300 px-4 py-2">Departure Location</th>
+                        <th className="border border-gray-300 px-4 py-2">Arrival Location</th>
+                        <th className="border border-gray-300 px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {timetables.map((timetable) => (
+                        <tr key={timetable._id} className="text-center">
+                            <td className="border border-gray-300 px-4 py-2">
+                                {timetable.route.startLocation}
+                            </td>
+                            <td className="border border-gray-300 px-4 py-2">
+                                {timetable.route.endLocation}
+                            </td>
+                            <td className="border border-gray-300 px-4 py-2">
+                                <button
+                                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                                    onClick={() => openModal(timetable)}
+                                >
+                                    View Details
+                                </button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {busData.map((bus) => (
-                            <tr key={bus.id} className="text-center">
-                                <td className="border border-gray-300 px-4 py-2">{bus.busNumber}</td>
-                                <td className="border border-gray-300 px-4 py-2">{bus.route}</td>
-                                <td className="border border-gray-300 px-4 py-2">{bus.time}</td>
-                                <td className="border border-gray-300 px-4 py-2">{bus.duration}</td>
-                                <td className="border border-gray-300 px-4 py-2">
-                                    <button
-                                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                                        onClick={() => openModal(bus)}
-                                    >
-                                        View Details
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                    ))}
+                </tbody>
+            </table>
 
-            <div className="md:hidden">
-                {/* Cards for smaller screens */}
-                {busData.map((bus) => (
-                    <div
-                        key={bus.id}
-                        className="bg-white shadow-md rounded-md p-4 mb-4"
-                    >
-                        <h2 className="text-xl font-bold mb-2">{bus.busNumber}</h2>
-                        <p className="text-gray-700">Route: {bus.route}</p>
-                        <p className="text-gray-700">Departure: {bus.time}</p>
-                        <p className="text-gray-700">Duration: {bus.duration}</p>
-                        <button
-                            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                            onClick={() => openModal(bus)}
-                        >
-                            View Details
-                        </button>
-                    </div>
+            {/* Modal for timetable details */}
+            {selectedTimetable && (
+    <Modal
+        isOpen={!!selectedTimetable}
+        onRequestClose={closeModal}
+        className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-6 relative mt-20"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+        <h2 className="text-2xl font-bold mb-4 text-center">Timetable Details</h2>
+
+        <table className="w-full table-auto border-collapse border border-gray-300">
+            <thead className="bg-gray-200">
+                <tr>
+                    <th className="border border-gray-300 px-4 py-2">Bus Number</th>
+                    <th className="border border-gray-300 px-4 py-2">Departure</th>
+                    <th className="border border-gray-300 px-4 py-2">Arrival</th>
+                    <th className="border border-gray-300 px-4 py-2">Stops</th>
+                </tr>
+            </thead>
+            <tbody>
+                {selectedTimetable.details.map((detail, index) => (
+                    <tr key={index} className="text-center">
+                        <td className="border border-gray-300 px-4 py-2">
+                            {detail.bus.busNumber}
+                        </td>
+                        <td className="border border-gray-300 px-4 py-2">
+                            {detail.departureLocation} at {detail.departureTime}
+                        </td>
+                        <td className="border border-gray-300 px-4 py-2">
+                            {detail.arrivalLocation} at {detail.arrivalTime}
+                        </td>
+                        <td className="border border-gray-300 px-4 py-2">
+                            {detail.stops.join(", ")}
+                        </td>
+                    </tr>
                 ))}
-            </div>
+            </tbody>
+        </table>
 
-            {/* Modal */}
-            {selectedBus && (
-                <Modal
-                    isOpen={!!selectedBus}
-                    onRequestClose={closeModal}
-                    className="max-w-lg mx-auto bg-white rounded-lg shadow-lg p-6 relative"
-                    overlayClassName="fixed inset-0 bg-black-900 bg-opacity-50 flex items-center justify-center z-1"
-                >
-                    <h2 className="text-2xl font-bold mb-4">Bus Details</h2>
-                    <p className="mb-2">Bus Number: {selectedBus.busNumber}</p>
-                    <p className="mb-2">Route: {selectedBus.route}</p>
-                    <p className="mb-2">Departure Time: {selectedBus.time}</p>
-                    <p className="mb-4">Duration: {selectedBus.duration}</p>
-                    <button
-                        className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-                        onClick={closeModal}
-                    >
-                        &times;
-                    </button>
-                </Modal>
-            )}
+        <button
+            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl"
+            onClick={closeModal}
+        >
+            ×
+        </button>
+    </Modal>
+)}
+            <ToastContainer />
         </div>
     );
 };
 
-export default BusSchedule;
+export default Timetable;
