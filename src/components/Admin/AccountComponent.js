@@ -53,14 +53,12 @@ const Account = () => {
   };
 
   const handleLogout = () => {
-    // Clear token from localStorage
+    
     localStorage.removeItem("token");
 
-    // Optional: Provide feedback to the user
     alert("You have been logged out successfully.");
 
-    // Redirect to login page
-    window.location.href = "/login"; // Or use navigate if using react-router
+    window.location.href = "/login"; 
   };
 
   return (
