@@ -76,7 +76,9 @@ const BusList = () => {
     try {
       const response = await axios.put(
         `http://localhost:5000/api/buses/${editingBus._id}`,
-        editFormData
+        editFormData, {
+            headers: { Authorization: `Bearer ${token}` },
+        }
       );
 
       setBuses(buses.map(bus => 
@@ -115,7 +117,9 @@ const BusList = () => {
       const confirmDelete = window.confirm("Are you sure you want to delete this bus?");
       if (!confirmDelete) return;
 
-      await axios.delete(`http://localhost:5000/api/buses/${busId}`);
+      await axios.delete(`http://localhost:5000/api/buses/${busId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
       setBuses(buses.filter((bus) => bus._id !== busId));
       alert("Bus deleted successfully!");
     } catch (error) {

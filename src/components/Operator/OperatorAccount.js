@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import UserInfo from "./UserInfo.js";
 import CreateBus from "./CreateBus";
 import BusList from "./BusList";
+import BookingList from "./BookingList.js";
 const Account = () => {
   const [activeTab, setActiveTab] = useState("User Info");
 
@@ -20,6 +21,10 @@ const Account = () => {
       case "Bus List":
         return <div className="p-6 bg-[#F6F6F6] rounded-lg shadow-md">
           <BusList />
+        </div>;
+      case "Booking List":
+        return <div className="p-6 bg-[#F6F6F6] rounded-lg shadow-md">
+          <BookingList />
         </div>;
       case "Logout":
         return <div className="p-6 bg-[#F6F6F6] rounded-lg shadow-md">
@@ -55,7 +60,7 @@ const Account = () => {
           <div className="p-4">
             <h3 className="text-lg font-semibold mb-4">Account</h3>
             <nav className="space-y-4">
-              {["User Info", "Create Bus", "Bus List", "Logout"].map(
+              {["User Info", "Create Bus", "Bus List", "Booking List", "Logout"].map(
                 (tab) => (
                   <button
                     key={tab}

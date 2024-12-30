@@ -3,6 +3,8 @@ import Modal from "react-modal";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 Modal.setAppElement("#root");
 
@@ -23,7 +25,6 @@ const Timetable = () => {
         try {
             const response = await axios.get("http://localhost:5000/api/timetables");
             setTimetables(response.data);
-            console.log("response is ",response.data);
         } catch (error) {
             toast.error("Failed to fetch timetables");
         }
@@ -36,6 +37,22 @@ const Timetable = () => {
 
     const closeModal = () => {
         setSelectedTimetable(null);
+    };
+
+    const downloadPDF = () => {
+        const doc = new jsPDF();
+        doc.text("Timetable Details", 20, 10);
+        const tableData = selectedTimetable.details.map((detail) => [
+            detail.bus.busNumber,
+            `${detail.departureLocation} at ${detail.departureTime}`,
+            `${detail.arrivalLocation} at ${detail.arrivalTime}`,
+            detail.stops.join(", "),
+        ]);
+        doc.autoTable({
+            head: [["Bus Number", "Departure", "Arrival", "Stops"]],
+            body: tableData,
+        });
+        doc.save("TimetableDetails.pdf");
     };
 
     if (loading) {
@@ -82,51 +99,60 @@ const Timetable = () => {
 
             {/* Modal for timetable details */}
             {selectedTimetable && (
-    <Modal
-        isOpen={!!selectedTimetable}
-        onRequestClose={closeModal}
-        className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-6 relative mt-20"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    >
-        <h2 className="text-2xl font-bold mb-4 text-center">Timetable Details</h2>
+                <Modal
+                    isOpen={!!selectedTimetable}
+                    onRequestClose={closeModal}
+                    className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-6 relative mt-20"
+                    overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                >
+                    <h2 className="text-2xl font-bold mb-4 text-center">Timetable Details</h2>
 
-        <table className="w-full table-auto border-collapse border border-gray-300">
-            <thead className="bg-gray-200">
-                <tr>
-                    <th className="border border-gray-300 px-4 py-2">Bus Number</th>
-                    <th className="border border-gray-300 px-4 py-2">Departure</th>
-                    <th className="border border-gray-300 px-4 py-2">Arrival</th>
-                    <th className="border border-gray-300 px-4 py-2">Stops</th>
-                </tr>
-            </thead>
-            <tbody>
-                {selectedTimetable.details.map((detail, index) => (
-                    <tr key={index} className="text-center">
-                        <td className="border border-gray-300 px-4 py-2">
-                            {detail.bus.busNumber}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                            {detail.departureLocation} at {detail.departureTime}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                            {detail.arrivalLocation} at {detail.arrivalTime}
-                        </td>
-                        <td className="border border-gray-300 px-4 py-2">
-                            {detail.stops.join(", ")}
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
+                    <table className="w-full table-auto border-collapse border border-gray-300">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="border border-gray-300 px-4 py-2">Bus Number</th>
+                                <th className="border border-gray-300 px-4 py-2">Departure</th>
+                                <th className="border border-gray-300 px-4 py-2">Arrival</th>
+                                <th className="border border-gray-300 px-4 py-2">Stops</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {selectedTimetable.details.map((detail, index) => (
+                                <tr key={index} className="text-center">
+                                    <td className="border border-gray-300 px-4 py-2">
+                                        {detail.bus.busNumber}
+                                    </td>
+                                    <td className="border border-gray-300 px-4 py-2">
+                                        {detail.departureLocation} at {detail.departureTime}
+                                    </td>
+                                    <td className="border border-gray-300 px-4 py-2">
+                                        {detail.arrivalLocation} at {detail.arrivalTime}
+                                    </td>
+                                    <td className="border border-gray-300 px-4 py-2">
+                                        {detail.stops.join(", ")}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
 
-        <button
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl"
-            onClick={closeModal}
-        >
-            ×
-        </button>
-    </Modal>
-)}
+                    <div className="mt-4 flex justify-end space-x-4">
+                        <button
+                            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                            onClick={downloadPDF}
+                        >
+                            Download PDF
+                        </button>
+                    </div>
+
+                    <button
+                        className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl"
+                        onClick={closeModal}
+                    >
+                        ×
+                    </button>
+                </Modal>
+            )}
             <ToastContainer />
         </div>
     );
