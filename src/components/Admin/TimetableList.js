@@ -27,7 +27,7 @@ const TimetableList = () => {
   const fetchTimetables = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/api/timetables");
+      const response = await axios.get("https://busekeapi.onrender.com/api/timetables");
       setTimetables(response.data);
     } catch (error) {
       toast.error("Failed to fetch timetables");
@@ -39,7 +39,7 @@ const TimetableList = () => {
     if (window.confirm("Are you sure you want to delete this timetable?")) {
       setLoading(true);
       try {
-        await axios.delete(`http://localhost:5000/api/timetables/${id}`);
+        await axios.delete(`https://busekeapi.onrender.com/api/timetables/${id}`);
         toast.success("Timetable deleted successfully");
         fetchTimetables();
         if (selectedTimetable?._id === id) {
@@ -77,7 +77,7 @@ const TimetableList = () => {
     setLoading(true);
     try {
         console.log("editFormDAta", editFormData);
-      await axios.put(`http://localhost:5000/api/timetables/${selectedTimetable._id}`, editFormData);
+      await axios.put(`https://busekeapi.onrender.com/api/timetables/${selectedTimetable._id}`, editFormData);
       toast.success("Timetable updated successfully");
       setIsEditModalOpen(false);
       fetchTimetables();

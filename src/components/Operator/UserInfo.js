@@ -22,7 +22,7 @@ const PersonalDetails = () => {
 
   const fetchUserDetails = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/users/${userId}`, {
+      const response = await axios.get(`https://busekeapi.onrender.com/api/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUser(response.data);
@@ -63,7 +63,7 @@ const PersonalDetails = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/users/${userId}`,
+        `https://busekeapi.onrender.com/api/users/${userId}`,
         editFormData,
         {
           headers: { Authorization: `Bearer ${token}` }
@@ -138,7 +138,7 @@ const PersonalDetails = () => {
               disabled={!isEditing}
             />
           </div>
-          <div className="flex-shrink-0 space-x-4">
+          {/* <div className="flex-shrink-0 space-x-4">
             {!isEditing ? (
               <button
                 type="button"
@@ -164,7 +164,7 @@ const PersonalDetails = () => {
                 </button>
               </>
             )}
-          </div>
+          </div> */}
         </div>
       </form>
     </div>

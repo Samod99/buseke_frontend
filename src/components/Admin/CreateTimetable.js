@@ -64,7 +64,7 @@ const CreateTimetable = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/timetables", formData, {
+      const response = await axios.post("https://busekeapi.onrender.com/api/timetables", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Timetable created successfully!");

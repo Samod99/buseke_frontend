@@ -34,7 +34,7 @@ const BusList = () => {
       ).toString();
 
       const response = await axios.get(
-        `http://localhost:5000/api/buses${queryParams ? `?${queryParams}` : ''}`
+        `https://busekeapi.onrender.com/api/buses${queryParams ? `?${queryParams}` : ''}`
       );
       setBuses(response.data);
       setLoading(false);
@@ -75,7 +75,7 @@ const BusList = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/buses/${editingBus._id}`,
+        `https://busekeapi.onrender.com/api/buses/${editingBus._id}`,
         editFormData, {
             headers: { Authorization: `Bearer ${token}` },
         }
@@ -117,7 +117,7 @@ const BusList = () => {
       const confirmDelete = window.confirm("Are you sure you want to delete this bus?");
       if (!confirmDelete) return;
 
-      await axios.delete(`http://localhost:5000/api/buses/${busId}`, {
+      await axios.delete(`https://busekeapi.onrender.com/api/buses/${busId}`, {
         headers: { Authorization: `Bearer ${token}` },
     });
       setBuses(buses.filter((bus) => bus._id !== busId));

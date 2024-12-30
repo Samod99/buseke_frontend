@@ -45,7 +45,8 @@ const Login = () => {
     try {
       console.log("Data object is", data);
 
-    const response = await axios.post("http://localhost:5000/api/auth/login", data);
+    // const response = await axios.post("http://localhost:5000/api/auth/login", data);
+    const response = await axios.post("https://busekeapi.onrender.com/api/auth/login", data);
 
       const { token, user } = response.data;
       console.log(response.data);

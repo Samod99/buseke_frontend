@@ -19,14 +19,6 @@ const Account = () => {
             <UserInfo />
           </div>
         );
-      case "Favourites":
-        return <div className="p-6 bg-[#F6F6F6] rounded-lg shadow-md">
-          <Favourites />
-        </div>;
-      case "Change Password":
-        return <div className="p-6 bg-[#F6F6F6] rounded-lg shadow-md">
-          <ChangePwd />
-        </div>;
       case "Create User":
         return <div className="p-6 bg-[#F6F6F6] rounded-lg shadow-md">
           <CreateUser />
@@ -85,7 +77,7 @@ const Account = () => {
           <div className="p-4">
             <h3 className="text-lg font-semibold mb-4">Account</h3>
             <nav className="space-y-4">
-              {["User Info", "Favourites", "Change Password", "Create User", "User List", "Create Route", "Route List", "Create Timetable", "Timetable List", "Logout"].map(
+              {["User Info", "Create User", "User List", "Create Route", "Route List", "Create Timetable", "Timetable List", "Logout"].map(
                 (tab) => (
                   <button
                     key={tab}

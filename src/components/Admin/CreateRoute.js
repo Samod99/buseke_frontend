@@ -30,7 +30,7 @@ const CreateRoute = () => {
                 stops: formData.stops.split(',').map(stop => stop.trim()) 
             };
     
-            const response = await axios.post("http://localhost:5000/api/routes", updatedFormData, {
+            const response = await axios.post("https://busekeapi.onrender.com/api/routes", updatedFormData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             toast.success("Route created successfully!");
