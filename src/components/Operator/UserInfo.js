@@ -71,7 +71,6 @@ const PersonalDetails = () => {
       );
   
       setUser(response.data.user);
-      // Properly stringify the user data before storing
       localStorage.setItem('user', JSON.stringify(response.data.user));
       setIsEditing(false);
       alert("Profile updated successfully!");
@@ -121,7 +120,7 @@ const PersonalDetails = () => {
               className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-[#2b241a] focus:border-[#2b241a] sm:text-sm ${
                 isEditing ? 'bg-white' : 'bg-gray-100'
               } py-2 px-4`}
-              disabled={true} // Role should not be editable
+              disabled={true} 
             />
           </div>
           <div>
