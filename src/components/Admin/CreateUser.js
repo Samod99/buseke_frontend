@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import RequestResponseDisplay from "../RequestResponseDisplay"; 
 
 const CreateUser = () => {
     const [formData, setFormData] = useState({
@@ -11,6 +12,9 @@ const CreateUser = () => {
         role: "user", 
     });
 
+    const [reqObject, setReqObject] = useState(null);
+    const [resObject, setResObject] = useState(null);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -19,7 +23,12 @@ const CreateUser = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("https://busekeapi.onrender.com/api/users", formData);
+            const requestPayload = formData;
+            setReqObject(requestPayload);
+
+            const response = await axios.post("https://busekeapi.onrender.com/api/users", requestPayload);
+
+            setResObject(response.data);
             toast.success("User created successfully!");
             console.log("User created:", response.data);
         } catch (error) {
@@ -27,6 +36,8 @@ const CreateUser = () => {
             
             const errorMessage = error.response?.data?.error || "Failed to create user. Please try again.";
             toast.error(errorMessage);
+
+            setResObject({ error: errorMessage });
         }
     };
 
@@ -42,7 +53,7 @@ const CreateUser = () => {
                             name="username"
                             value={formData.username}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="Enter user's name"
                         />
@@ -54,7 +65,7 @@ const CreateUser = () => {
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="Enter password"
                         />
@@ -66,7 +77,7 @@ const CreateUser = () => {
                             name="role"
                             value={formData.role}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="Enter role"
                         />
@@ -78,7 +89,7 @@ const CreateUser = () => {
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="Enter email address"
                         />
@@ -91,6 +102,11 @@ const CreateUser = () => {
                     </button>
                 </form>
                 <ToastContainer />
+
+                {/* Display the request and response details */}
+                {reqObject && resObject && (
+                    <RequestResponseDisplay req={reqObject} res={resObject} />
+                )}
             </div>
         </div>
     );

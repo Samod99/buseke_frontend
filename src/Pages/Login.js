@@ -5,13 +5,17 @@ import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Eye, EyeOff } from "lucide-react";
-//import api from "../api"; 
 import { jwtDecode } from "jwt-decode"; 
 import axios from "axios";
+import RequestResponseDisplay from "../components/RequestResponseDisplay"; 
 
 const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  
+  const [requestData, setRequestData] = useState(null);
+  const [responseData, setResponseData] = useState(null);
+
   const {
     register,
     handleSubmit,
@@ -43,10 +47,12 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
+      setRequestData(data);
       console.log("Data object is", data);
 
-    // const response = await axios.post("http://localhost:5000/api/auth/login", data);
-    const response = await axios.post("https://busekeapi.onrender.com/api/auth/login", data);
+      const response = await axios.post("https://busekeapi.onrender.com/api/auth/login", data);
+
+      setResponseData(response.data);
 
       const { token, user } = response.data;
       console.log(response.data);
@@ -72,6 +78,7 @@ const Login = () => {
         toast.error("Invalid role. Please contact support.");
       }
     } catch (error) {
+      setResponseData(error.response?.data || { error: "Login failed" });
       const errorMessage = error.response?.data?.error || "Login failed. Please try again.";
       toast.error(errorMessage, {
         position: "top-right",
@@ -82,11 +89,11 @@ const Login = () => {
 
   return (
     <div
-      className="relative bg-cover bg-center h-screen px-4"
+      className="relative bg-cover bg-center min-h-screen px-4"
       style={{ backgroundImage: "url('https://cctsrilanka.com/wp-content/uploads/2017/12/cctsrilanka.com_.Itinerary-Public-Buses.jpg')" }}
     >
       <div className="absolute inset-0 bg-black-900 opacity-50"></div>
-      <div className="max-w-7xl mx-auto relative z-10 h-full flex justify-start items-center">
+      <div className="max-w-7xl mx-auto relative z-10 py-8 flex flex-col justify-center items-start">
         <div className="bg-white rounded-5 shadow-lg w-full max-w-lg p-6">
           <h1 className="text-3xl font-bold text-[#333333] mb-7">Login</h1>
           <p className="text-[#333333] text-base mb-6">
@@ -99,14 +106,14 @@ const Login = () => {
                 htmlFor="username"
                 className="block text-lg font-normal text-black-900 mb-1"
               >
-                Username
+                User Name
               </label>
               <input
                 type="text"
                 id="username"
                 name="username"
                 {...register("username", {
-                  required: "Username is required",
+                  //required: "Username is required",
                 })}
                 className={`w-full px-3 py-2 border rounded focus:outline-none ${errors.username
                     ? "border-red-500 focus:ring-2 focus:ring-red-500"
@@ -132,7 +139,7 @@ const Login = () => {
                   id="password"
                   name="password"
                   {...register("password", {
-                    required: "Password is required",
+                    //required: "Password is required",
                     minLength: {
                       value: 6,
                       message: "Password must be at least 6 characters",
@@ -164,7 +171,7 @@ const Login = () => {
               Sign in
             </button>
 
-            <div className="flex items-center justify-between my-6">
+            {/* <div className="flex items-center justify-between my-6">
               <label className="flex items-center">
                 <input
                   type="checkbox"
@@ -178,9 +185,9 @@ const Login = () => {
               >
                 Reset password
               </Link>
-            </div>
+            </div> */}
 
-            <p className="text-left text-sm text-[#666666] mt-6">
+            {/* <p className="text-left text-sm text-[#666666] mt-6">
               Don’t have an account?{" "}
               <Link
                 to="/signup"
@@ -188,8 +195,13 @@ const Login = () => {
               >
                 Sign up
               </Link>
-            </p>
+            </p> */}
           </form>
+        </div>
+        
+        <div className="bg-white rounded-5 shadow-lg w-full max-w-lg p-6 mt-4">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Request Response Data</h2>
+          <RequestResponseDisplay req={requestData} res={responseData} />
         </div>
       </div>
       <ToastContainer />

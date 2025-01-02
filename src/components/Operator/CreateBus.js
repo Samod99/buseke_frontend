@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import RequestResponseDisplay from "../RequestResponseDisplay"; 
 
 const CreateBus = () => {
     const [formData, setFormData] = useState({
@@ -13,8 +14,11 @@ const CreateBus = () => {
         ownershipType: "", 
     });
 
+    const [reqObject, setReqObject] = useState(null); 
+    const [resObject, setResObject] = useState(null); 
+
     const token = localStorage.getItem('token');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -23,16 +27,29 @@ const CreateBus = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setReqObject(null); 
+        setResObject(null); 
         try {
-            const response = await axios.post("https://busekeapi.onrender.com/api/buses", formData, {
+            const requestPayload = {
+                url: "https://busekeapi.onrender.com/api/buses",
+                method: "POST",
                 headers: { Authorization: `Bearer ${token}` },
+                body: formData,
+            };
+
+            setReqObject(requestPayload); 
+
+            const response = await axios.post(requestPayload.url, formData, {
+                headers: requestPayload.headers,
             });
+
             toast.success("Bus created successfully!");
+            setResObject(response.data); 
         } catch (error) {
             console.error("Error creating bus:", error);
-            
             const errorMessage = error.response?.data?.error || "Failed to create bus. Please try again.";
             toast.error(errorMessage);
+            setResObject({ error: errorMessage }); 
         }
     };
 
@@ -48,7 +65,7 @@ const CreateBus = () => {
                             name="busNumber"
                             value={formData.busNumber}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="Enter bus number"
                         />
@@ -60,7 +77,7 @@ const CreateBus = () => {
                             name="capacity"
                             value={formData.capacity}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="Enter capacity"
                         />
@@ -72,7 +89,7 @@ const CreateBus = () => {
                             name="routeId"
                             value={formData.routeId}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="Enter route id"
                         />
@@ -84,7 +101,7 @@ const CreateBus = () => {
                             name="operatorId"
                             value={formData.operatorId}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="Enter operator id"
                         />
@@ -96,7 +113,7 @@ const CreateBus = () => {
                             name="seatCount"
                             value={formData.seatCount}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="Enter seat count"
                         />
@@ -108,7 +125,7 @@ const CreateBus = () => {
                             name="ownershipType"
                             value={formData.ownershipType}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="SLTB or PRIVATE"
                         />
@@ -121,6 +138,11 @@ const CreateBus = () => {
                     </button>
                 </form>
                 <ToastContainer />
+            </div>
+
+            <div className="mt-10">
+                <h2 className="text-2xl font-semibold mb-4">Request and Response</h2>
+                <RequestResponseDisplay req={reqObject} res={resObject} />
             </div>
         </div>
     );

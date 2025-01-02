@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import RequestResponseDisplay from './RequestResponseDisplay'; 
 
 const ReservationPage = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +18,8 @@ const ReservationPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [reqObject, setReqObject] = useState(null); 
+  const [resObject, setResObject] = useState(null); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,12 +38,29 @@ const ReservationPage = () => {
     e.preventDefault();
     setError(null);
     setLoading(true);
+    setReqObject(null); 
+    setResObject(null); 
 
-    if (!validateTime(formData.time)) {
-      setError('Please enter a valid time in HH:MM format');
-      setLoading(false);
-      return;
-    }
+    // if (!validateTime(formData.time)) {
+    //   setError('Please enter a valid time in HH:MM format');
+    //   setLoading(false);
+    //   return;
+    // }
+
+    const requestPayload = {
+      ...formData,
+      isPaid: false,
+      isCancelled: false,
+      isUsed: false,
+      isActive: true,
+    };
+
+    setReqObject({
+      url: 'https://busekeapi.onrender.com/api/bookings',
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: requestPayload,
+    });
 
     try {
       const response = await fetch('https://busekeapi.onrender.com/api/bookings', {
@@ -48,21 +68,17 @@ const ReservationPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          isPaid: false,
-          isCancelled: false,
-          isUsed: false,
-          isActive: true,
-        }),
+        body: JSON.stringify(requestPayload),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Booking failed. Please try again.');
+        throw new Error(data.message || 'Booking failed. Please try again.');
       }
 
-      const data = await response.json();
       toast.success("Booking created successfully!");
+      setResObject(data); 
 
       setFormData({
         busNumber: "",
@@ -75,10 +91,11 @@ const ReservationPage = () => {
         date: "",
         time: "",
       });
-
+      alert(`Booking Created Successfully and Your Booking Code is ${data.booking.bookingIdentificationCode}`);
     } catch (err) {
       setError(err.message);
       toast.error(err.message);
+      setResObject({ error: err.message }); 
     } finally {
       setLoading(false);
     }
@@ -88,11 +105,11 @@ const ReservationPage = () => {
     <div className="py-10 px-4">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 rounded-lg p-8">
         <div className="flex justify-center items-center">
-        <img
-                        src="https://travel-eat-love.de/wp-content/uploads/2020/04/Sri_Lanka_Bus-scaled.jpg"
-                        alt="Reservation"
-                        className="w-full h-auto rounded-lg"
-                    />
+          <img
+            src="https://travel-eat-love.de/wp-content/uploads/2020/04/Sri_Lanka_Bus-scaled.jpg"
+            alt="Reservation"
+            className="w-full h-auto rounded-lg"
+          />
         </div>
         <div>
           <h1 className="text-3xl font-bold mb-6 text-center">Ticket Reservation</h1>
@@ -111,7 +128,7 @@ const ReservationPage = () => {
                 name="passengerName"
                 value={formData.passengerName}
                 onChange={handleChange}
-                required
+                //required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter passenger name"
               />
@@ -126,7 +143,7 @@ const ReservationPage = () => {
                 name="passengerIDNo"
                 value={formData.passengerIDNo}
                 onChange={handleChange}
-                required
+                //required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter ID number"
               />
@@ -141,7 +158,7 @@ const ReservationPage = () => {
                 name="passengerMobile"
                 value={formData.passengerMobile}
                 onChange={handleChange}
-                required
+                //required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter mobile number"
               />
@@ -157,7 +174,7 @@ const ReservationPage = () => {
                   name="startLocation"
                   value={formData.startLocation}
                   onChange={handleChange}
-                  required
+                  //required
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter start location"
                 />
@@ -172,7 +189,7 @@ const ReservationPage = () => {
                   name="endLocation"
                   value={formData.endLocation}
                   onChange={handleChange}
-                  required
+                  //required
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter end location"
                 />
@@ -189,7 +206,7 @@ const ReservationPage = () => {
                   name="date"
                   value={formData.date}
                   onChange={handleChange}
-                  required
+                  //required
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -203,7 +220,7 @@ const ReservationPage = () => {
                   name="time"
                   value={formData.time}
                   onChange={handleChange}
-                  required
+                  //required
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -217,7 +234,7 @@ const ReservationPage = () => {
                 name="busNumber"
                 value={formData.busNumber}
                 onChange={handleChange}
-                required
+                //required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -231,7 +248,7 @@ const ReservationPage = () => {
                 value={formData.seatCount}
                 onChange={handleChange}
                 min="1"
-                required
+                //required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -248,8 +265,13 @@ const ReservationPage = () => {
               {loading ? 'Processing...' : 'Reserve Now'}
             </button>
           </form>
-                          <ToastContainer />
+          <ToastContainer />
         </div>
+      </div>
+
+      <div className="mt-10">
+        <h2 className="text-2xl font-semibold mb-4">Request and Response</h2>
+        <RequestResponseDisplay req={reqObject} res={resObject} />
       </div>
     </div>
   );
