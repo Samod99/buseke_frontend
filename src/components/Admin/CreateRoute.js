@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import RequestResponseDisplay from "../RequestResponseDisplay"; 
 
 const CreateRoute = () => {
     const [formData, setFormData] = useState({
@@ -14,8 +15,11 @@ const CreateRoute = () => {
         duration: "",
     });
 
+    const [reqObject, setReqObject] = useState(null);
+    const [resObject, setResObject] = useState(null);
+
     const token = localStorage.getItem('token');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -29,15 +33,36 @@ const CreateRoute = () => {
                 ...formData,
                 stops: formData.stops.split(',').map(stop => stop.trim()) 
             };
-    
-            const response = await axios.post("https://busekeapi.onrender.com/api/routes", updatedFormData, {
-                headers: { Authorization: `Bearer ${token}` },
+
+            const requestPayload = {
+                url: "https://busekeapi.onrender.com/api/routes",
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: updatedFormData
+            };
+            setReqObject(requestPayload);
+
+            const response = await axios.post(requestPayload.url, updatedFormData, {
+                headers: requestPayload.headers,
             });
+
+            setResObject({
+                status: response.status,
+                data: response.data,
+            });
+
             toast.success("Route created successfully!");
         } catch (error) {
             console.error("Error creating route:", error);
-    
+
             const errorMessage = error.response?.data?.error || "Failed to create route. Please try again.";
+            setResObject({
+                status: error.response?.status || 500,
+                data: errorMessage,
+            });
             toast.error(errorMessage);
         }
     };
@@ -54,7 +79,7 @@ const CreateRoute = () => {
                             name="routeNumber"
                             value={formData.routeNumber}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="Enter route number"
                         />
@@ -66,7 +91,7 @@ const CreateRoute = () => {
                             name="startLocation"
                             value={formData.startLocation}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="Enter start location"
                         />
@@ -78,7 +103,7 @@ const CreateRoute = () => {
                             name="endLocation"
                             value={formData.endLocation}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="Enter end location"
                         />
@@ -90,7 +115,7 @@ const CreateRoute = () => {
                             name="stops"
                             value={formData.stops}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="Enter stops (comma-separated, e.g., Stop1, Stop2, Stop3)"
                         />
@@ -102,7 +127,7 @@ const CreateRoute = () => {
                             name="distance"
                             value={formData.distance}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="Enter distance"
                         />
@@ -114,7 +139,7 @@ const CreateRoute = () => {
                             name="averageSpeed"
                             value={formData.averageSpeed}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="Enter average speed"
                         />
@@ -126,7 +151,7 @@ const CreateRoute = () => {
                             name="duration"
                             value={formData.duration}
                             onChange={handleChange}
-                            required
+                            //required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-4"
                             placeholder="Enter duration"
                         />
@@ -140,6 +165,7 @@ const CreateRoute = () => {
                 </form>
                 <ToastContainer />
             </div>
+            <RequestResponseDisplay req={reqObject} res={resObject} />
         </div>
     );
 };

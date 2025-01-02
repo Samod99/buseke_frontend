@@ -170,7 +170,7 @@ const BookingList = () => {
         <input
           type="text"
           name="bookingIdentificationCode"
-          placeholder="Search by booking ID"
+          placeholder="Search by booking code"
           value={searchParams.bookingIdentificationCode}
           onChange={handleSearchChange}
           className="p-2 border rounded-md"
@@ -190,7 +190,7 @@ const BookingList = () => {
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
             <h2 className="text-xl font-semibold mb-4">Booking Details</h2>
             <div className="space-y-3">
-              <p><span className="font-medium">Booking ID:</span> {viewingBooking.bookingIdentificationCode}</p>
+              <p><span className="font-medium">Booking Code:</span> {viewingBooking.bookingIdentificationCode}</p>
               <p><span className="font-medium">Bus Number:</span> {viewingBooking.busNumber}</p>
               <p><span className="font-medium">Passenger ID:</span> {viewingBooking.passengerIDNo}</p>
               <p><span className="font-medium">Date:</span> {new Date(viewingBooking.date).toLocaleDateString()}</p>
@@ -241,7 +241,7 @@ const BookingList = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Booking ID</label>
+                <label className="block text-sm font-medium text-gray-700">Booking Code</label>
                 <input
                   type="text"
                   name="bookingIdentificationCode"
@@ -311,7 +311,7 @@ const BookingList = () => {
           >
             <div className="flex items-center space-x-4">
               <div>
-                <h2 className="text-lg font-medium text-gray-800">Booking ID: {booking.bookingIdentificationCode}</h2>
+                <h2 className="text-lg font-medium text-gray-800">Booking Code: {booking.bookingIdentificationCode}</h2>
                 <p className="text-sm text-gray-600">Bus Number: {booking.busNumber}</p>
                 <p className="text-sm text-gray-600">Passenger ID: {booking.passengerIDNo}</p>
                 <p className="text-sm text-gray-600">Date: {new Date(booking.date).toLocaleDateString()}</p>

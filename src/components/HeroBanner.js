@@ -13,7 +13,7 @@ const HeroBanner = () => {
                     Welcome to Our Website
                 </h1>
                 <p className="text-xl md:text-2xl mb-6">
-                    Discover amazing products and services tailored just for you.
+                    
                 </p>
 
                 <div className="flex flex-col md:flex-row gap-4">
