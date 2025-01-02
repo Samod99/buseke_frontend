@@ -42,9 +42,9 @@ const Navbar = () => {
                     <div className="hidden xl:block">
                         <marquee behavior="scroll" direction="left" className="text-black-900 text-base font-semibold">
                             <span className="inline-flex items-center">
-                                Welcome
+                                
                                 <span className="bg-yellow-200 text-yellow-900 font-bold mx-2 px-2 py-1 rounded-lg">
-                                    to our website
+                                    National Transport Commission
                                 </span>
                             </span>
                         </marquee>
